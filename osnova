@@ -62,9 +62,56 @@ do
           echo "Invalid option: --${OPTARG}" >&2
           exit 1
           ;;
+      esac
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Oprion -$OPTARG requires an arg" >&2
+      exit 1
+      ;;
+  esac
+done
 
+exec 3>&1 4>&2
 
+if [ -n "$outf" ]; then
+  if [-w "$outf"] || ([! -e "$outf"] && touch "$outf"); then
+    exec 1>"$outf"
+  else
+    echo "Can't write to output file: $outf" >&2
+    exit 1
+  fi
+fi
 
+if [ -n "$errf" ]; then
+  if [-w "$errf"] || ([! -e "$errf"] && touch "$errf"); then
+    exec 2>"$errf"
+  else
+    echo "Can't write to error file: $errf" >&2
+    exit 1
+  fi
+fi
+
+case "$action" in
+  users)
+    print_users
+    ;;
+  processes)
+    print_processes
+    ;;
+  help)
+    print_help
+    ;;
+  *)
+    echo "No valid action scecified" >&2
+    exit 1
+    ;;
+esac
+
+exec 1>&3 2>&4
 
 
 
