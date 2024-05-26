@@ -1,0 +1,83 @@
+#!/bin/bash
+
+print_users()
+{
+  cut -d: -f1,6 /etc/passwd
+}
+
+print_processes()
+{
+  ps -e --format pid,cmd --sort pid
+}
+
+print_help()
+{
+  echo "Usage: $0 [Options]"
+  echo "Options: "
+  echo " -u, --users"
+  echo " -p, --processes"
+  echo " -h, --help"
+  echo " -l PATH, --log PATH"
+  echo " -e PATH, --errors PATH"
+}
+
+outf=""
+errf=""
+while getopts ":uphl:e:-" opt
+do
+  case $opt in
+    u)
+      action="users"
+      ;;
+    p)
+      action="processes"
+      ;;
+    h)
+      action="help"
+      ;;
+    l)
+      outf="$OPTARG"
+      ;;
+    e)
+      errf="$OPTARG"
+      ;;
+    -)
+      case "${OPTARG}" in
+        users)
+          action="users"
+          ;;
+        processes)
+          action="processes"
+          ;;
+        help)
+          action="help"
+          ;;
+        log)
+          outf="${!OPTIND}"; OPTIND=$(($OPTIND+1))
+          ;;
+        errors)
+          errf="${!OPTIND}"; OPTIND=$(($OPTIND+1))
+          ;;
+        *)
+          echo "Invalid option: --${OPTARG}" >&2
+          exit 1
+          ;;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
